@@ -18,8 +18,6 @@
 
 		<p>Animations that involve transitioning between two states are often called <em>implicit transitions</em> as the states in between the start and final states are implicitly defined by the browser.</p>
 
-		<p><img alt="A CSS transition tells the browser to draw the intermediate states between the initial and final states, showing the user a smooth transitions." src="/files/4529/TransitionsPrinciple.png" style="width: 680px; height: 196px; display: block; margin: auto;"></p>
-
 		<p>CSS transitions let you decide which properties to animate (by <em>listing them explicitly</em>), when the animation will start (by setting a <em>delay)</em>, how long the transition will last (by setting a <em>duration</em>), and how the transition will run (by defining a <em>timing function</em>, e.g. linearly or quick at the beginning, slow at the end).</p>
 
 <div class="note"><strong>Note:</strong> CSS transition properties can be used without any prefix provider, but since the specification has only recently achieved stability, the vendor prefixes can still be necessary for browsers based on WebKit. They are also necessary for compatibility with older browser versions (e.g.: Firefox 15 and earlier, Opera 12 and earlier). A compatibility table is available at the bottom of this page with more information.</div>
@@ -332,7 +330,7 @@
  </div>
  </dd>
  <dt><a href="/en-US/docs/Web/CSS/transition-timing-function" title="The CSS transition-timing-function property is used to describe how the intermediate values of the CSS&nbsp;properties being affected by a transition effect are calculated. This in essence lets you establish an acceleration curve, so that the speed of the transition can vary over its duration."><code>transition-timing-function</code></a></dt>
- <dd><img alt="" src="/files/3434/TF_with_output_gt_than_1.png" style="width: 130px; height: 173px; float: left; margin-right: 5px;">Specifies a function to define how intermediate values for properties are computed. <em>Timing functions</em> determine how intermediate values of the transition are calculated. Most <a href="/en-US/docs/CSS/timing-function" title="/en-US/docs/CSS/timing-function">timing functions</a> can be specified by providing the graph of the corresponding function, as defined by four points defining a cubic bezier. You can also choose easing from&nbsp;<a class="external external-icon" href="http://easings.net/" title="http://easings.net/">Easing Functions Cheat Sheet</a>.
+ <dd>Specifies a function to define how intermediate values for properties are computed. <em>Timing functions</em> determine how intermediate values of the transition are calculated. Most <a href="/en-US/docs/CSS/timing-function" title="/en-US/docs/CSS/timing-function">timing functions</a> can be specified by providing the graph of the corresponding function, as defined by four points defining a cubic bezier. You can also choose easing from&nbsp;<a class="external external-icon" href="http://easings.net/" title="http://easings.net/">Easing Functions Cheat Sheet</a>.
  <div class="cleared">
  <div id="ttf_ease" style="width: 251px; display: inline-block; margin-right: 1px; margin-bottom: 1px;">
  <p><code>transition-timing-function: ease</code></p>
