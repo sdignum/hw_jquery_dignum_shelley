@@ -9,10 +9,1109 @@
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
+	<article id="wikiArticle">
+		<p></p>
+		<section class="Quick_links" id="Quick_Links"><!-- --></section>
+		<p></p>
+
+		<p><span class="seoSummary"><strong>CSS transitions</strong>, which are part of the <a href="/en-US/docs/CSS/CSS3" title="/en-US/docs/CSS/CSS3">CSS3</a> set of specifications, provide a way to control animation speed when changing CSS properties. Instead of having property changes take effect immediately, you can cause the changes in a property to take place over a period of time.</span> For example, if you change the color of an element from white to black, usually the change is instantaneous. With CSS transitions enabled, changes occur at time intervals that follow an acceleration curve, all of which can be customized.</p>
+
+		<p>Animations that involve transitioning between two states are often called <em>implicit transitions</em> as the states in between the start and final states are implicitly defined by the browser.</p>
+
+		<p><img alt="A CSS transition tells the browser to draw the intermediate states between the initial and final states, showing the user a smooth transitions." src="/files/4529/TransitionsPrinciple.png" style="width: 680px; height: 196px; display: block; margin: auto;"></p>
+
+		<p>CSS transitions let you decide which properties to animate (by <em>listing them explicitly</em>), when the animation will start (by setting a <em>delay)</em>, how long the transition will last (by setting a <em>duration</em>), and how the transition will run (by defining a <em>timing function</em>, e.g. linearly or quick at the beginning, slow at the end).</p>
+
+<div class="note"><strong>Note:</strong> CSS transition properties can be used without any prefix provider, but since the specification has only recently achieved stability, the vendor prefixes can still be necessary for browsers based on WebKit. They are also necessary for compatibility with older browser versions (e.g.: Firefox 15 and earlier, Opera 12 and earlier). A compatibility table is available at the bottom of this page with more information.</div>
+
+<h2 id="Which_CSS_properties_are_animatable.3F">Which CSS properties are animatable?</h2>
+
+<p>The Web author can define which property has to be animated and in which way. This allows the creation of complex transitions. As it doesn't make sense to animate some properties, the <a href="/en-US/docs/CSS/CSS_animated_properties" title="/en-US/docs/">list of animatable properties</a> is limited to a finite set.</p>
+
+<div class="note">Note: The set of properties that can be animated is subject to change. Developers should proceed with caution.</div>
+
+<p class="note">Also the auto value is often a very complex case. The specification asks not to animate from and to such a value. Some user agents, like those based on Gecko, implement this requirement and others, like those based on WebKit, are less strict. Using animations with <code>auto</code>&nbsp;may lead to unpredictable results, depending on&nbsp;the browser and its version, and should be avoided.</p>
+
+<p class="note">Care should also be taken when using a transition immediately after adding the element to the DOM using&nbsp;<code>.appendChild()</code> or removing its&nbsp;<code>display: none;&nbsp;</code>property. This is seen as if the initial state had never occurred and the element was always in its final state. The easy way to overcome this limitation is to apply a&nbsp;<code>window.setTimeout()</code> of a handful of milliseconds before changing the CSS property you intend to transition to.</p>
+
+<h3 id="Multiple_animated_properties_example">Multiple animated properties example</h3>
+
+<h4 id="HTML_Content">HTML Content</h4>
+
+<pre data-number="" data-line="3" class="brush: html; highlight:[3]  language-html"><code class=" language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>body</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">&gt;</span></span>The box below combines transitions for: width, height, background-color, transform. Hover over the box to see these properties animated.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>box<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>body</span><span class="token punctuation">&gt;</span></span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 38px;" data-start="3" class=" line-highlight"> 
+</div></code></pre>
+
+<h4 id="CSS_Content">CSS Content</h4>
+
+<pre data-number="" data-line="8,9" class="brush: css; highlight:[8,9]  language-css"><code class=" language-css"><span class="token selector">.box </span><span class="token punctuation">{</span>
+    <span class="token property">border-style</span><span class="token punctuation">:</span> solid<span class="token punctuation">;</span>
+    <span class="token property">border-width</span><span class="token punctuation">:</span> 1px<span class="token punctuation">;</span>
+    <span class="token property">display</span><span class="token punctuation">:</span> block<span class="token punctuation">;</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">background-color</span><span class="token punctuation">:</span> #0000FF<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition</span><span class="token punctuation">:</span>width 2s, height 2s, background-color 2s, -webkit-transform 2s<span class="token punctuation">;</span>
+    <span class="token property">transition</span><span class="token punctuation">:</span>width 2s, height 2s, background-color 2s, transform 2s<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">.box:hover </span><span class="token punctuation">{</span>
+    <span class="token property">background-color</span><span class="token punctuation">:</span> #FFCCCC<span class="token punctuation">;</span>
+    <span class="token property">width</span><span class="token punctuation">:</span>200px<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span>200px<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transform</span><span class="token punctuation">:</span><span class="token function">rotate</span>(180deg)<span class="token punctuation">;</span>
+    <span class="token property">transform</span><span class="token punctuation">:</span><span class="token function">rotate</span>(180deg)<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div><div style="top: 266px;" data-start="15" class="line-number"></div><div style="top: 285px;" data-start="16" class="line-number"></div><div style="top: 304px;" data-start="17" class="line-number"></div><div style="top: 133px;" data-start="8" class=" line-highlight"> 
+</div><div style="top: 152px;" data-start="9" class=" line-highlight"> 
+</div></code></pre>
+
+<p><iframe class="live-sample-frame" src="https://mdn.mozillademos.org/en-US/docs/Web/Guide/CSS/Using_CSS_transitions$samples/Multiple_animated_properties_example?revision=739089" frameborder="0" height="300" width="600"></iframe></p>
+
+<h2 id="CSS_properties_used_to_define_transitions">CSS properties used to define transitions</h2>
+
+<p>CSS Transitions are controlled using the shorthand<a href="https://developer.mozilla.org/en-US/docs/CSS/transition" title="https://developer.mozilla.org/en-US/docs/CSS/transition"> </a><a href="/en-US/docs/Web/CSS/transition" title="The CSS transition property is a shorthand property for transition-property, transition-duration, transition-timing-function, and transition-delay. It allows to define the transition between two states of an element. Different states may be defined using pseudo-classes like :hover or :active or dynamically set using JavaScript."><code>transition</code></a> property. This is the best way to configure transitions, as it makes it easier to avoid that the lengths of the parameter list are out of sync, which can be very frustrating to have to spend lots of time debugging the CSS.</p>
+
+<p>You can control the individual components of the transition with the following sub-properties:</p>
+
+<p><strong>(Note that these transitions loop infinitely only for the purpose of our examples; CSS <code>transition</code>s only visualize a property change from start to finish. If you need visualizations that loop, look into the CSS <a href="/en-US/docs/CSS/animation" title="/en-US/docs/CSS/animation"><code>animation</code></a> property.)</strong></p>
+
+<dl>
+ <dt><a href="/en-US/docs/Web/CSS/transition-property" title="The transition-property CSS property is used to specify the names of CSS properties to which a transition effect should be applied."><code>transition-property</code></a></dt>
+ <dd>Specifies the name or names of the CSS&nbsp;properties to which transitions should be applied. Only properties listed here are animated during transitions; changes to all other properties occur instantaneously as usual.</dd>
+ <dt><a href="/en-US/docs/Web/CSS/transition-duration" title="The transition-duration CSS property specifies the number of seconds or milliseconds a transition animation should take to complete. By default, the value is 0s, meaning that no animation will occur."><code>transition-duration</code></a></dt>
+ <dd>Specifies the duration over which transitions should occur. You can specify a single duration that applies to all properties during the transition, or multiple values to allow each property to transition over a different period of time.
+ <div>
+ <div id="duration_0_5s" style="width: 251px; display: inline-block; margin-right: 1px; margin-bottom: 1px;">
+ <p><code>transition-duration: 0.5s</code></p>
+
+ <div style="display: none;">
+ <pre data-number="" class="brush:html  language-html"><code class=" language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>parent<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>box<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Lorem<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div></code></pre>
+
+ <pre data-number="" class="brush:css  language-css"><code class=" language-css"><span class="token selector">.parent </span><span class="token punctuation">{</span> <span class="token property">width</span><span class="token punctuation">:</span> 250px<span class="token punctuation">;</span> <span class="token property">height</span><span class="token punctuation">:</span>125px<span class="token punctuation">;</span><span class="token punctuation">}</span>
+<span class="token selector">.box </span><span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">background-color</span><span class="token punctuation">:</span> red<span class="token punctuation">;</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 20px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 0px<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span> 0px<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span>absolute<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top transform -webkit-transform color<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-duration</span><span class="token punctuation">:</span>0.5s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-timing-function</span><span class="token punctuation">:</span> ease-in-out<span class="token punctuation">;</span>
+    <span class="token property">transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top transform -webkit-transform color<span class="token punctuation">;</span>
+    <span class="token property">transition-duration</span><span class="token punctuation">:</span>0.5s<span class="token punctuation">;</span>
+    <span class="token property">transition-timing-function</span><span class="token punctuation">:</span> ease-in-out<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">.box1</span><span class="token punctuation">{</span>
+    <span class="token property">transform</span><span class="token punctuation">:</span> <span class="token function">rotate</span>(270deg)<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transform</span><span class="token punctuation">:</span> <span class="token function">rotate</span>(270deg)<span class="token punctuation">;</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+    <span class="token property">background-color</span><span class="token punctuation">:</span> blue<span class="token punctuation">;</span>
+    <span class="token property">color</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 18px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 150px<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span>25px<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span>absolute<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top transform -webkit-transform color<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-duration</span><span class="token punctuation">:</span>0.5s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-timing-function</span><span class="token punctuation">:</span> ease-in-out<span class="token punctuation">;</span>
+    <span class="token property">transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top transform -webkit-transformv color<span class="token punctuation">;</span>
+    <span class="token property">transition-duration</span><span class="token punctuation">:</span>0.5s<span class="token punctuation">;</span>
+    <span class="token property">transition-timing-function</span><span class="token punctuation">:</span> ease-in-out<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div><div style="top: 266px;" data-start="15" class="line-number"></div><div style="top: 285px;" data-start="16" class="line-number"></div><div style="top: 304px;" data-start="17" class="line-number"></div><div style="top: 323px;" data-start="18" class="line-number"></div><div style="top: 342px;" data-start="19" class="line-number"></div><div style="top: 361px;" data-start="20" class="line-number"></div><div style="top: 380px;" data-start="21" class="line-number"></div><div style="top: 399px;" data-start="22" class="line-number"></div><div style="top: 418px;" data-start="23" class="line-number"></div><div style="top: 437px;" data-start="24" class="line-number"></div><div style="top: 456px;" data-start="25" class="line-number"></div><div style="top: 475px;" data-start="26" class="line-number"></div><div style="top: 494px;" data-start="27" class="line-number"></div><div style="top: 513px;" data-start="28" class="line-number"></div><div style="top: 532px;" data-start="29" class="line-number"></div><div style="top: 551px;" data-start="30" class="line-number"></div><div style="top: 570px;" data-start="31" class="line-number"></div><div style="top: 589px;" data-start="32" class="line-number"></div><div style="top: 608px;" data-start="33" class="line-number"></div><div style="top: 627px;" data-start="34" class="line-number"></div></code></pre>
+
+ <pre data-number="" class="brush:js  language-js"><code class=" language-js"><span class="token keyword">function</span> <span class="token function">updateTransition<span class="token punctuation">(</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">var</span> el <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector<span class="token punctuation">(</span></span><span class="token string">"div.box"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>el<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    el<span class="token punctuation">.</span>className <span class="token operator">=</span> <span class="token string">"box1"</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    el <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector<span class="token punctuation">(</span></span><span class="token string">"div.box1"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    el<span class="token punctuation">.</span>className <span class="token operator">=</span> <span class="token string">"box"</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+   
+  <span class="token keyword">return</span> el<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">var</span> intervalID <span class="token operator">=</span> window<span class="token punctuation">.</span><span class="token function">setInterval<span class="token punctuation">(</span></span>updateTransition<span class="token punctuation">,</span> <span class="token number">7000</span><span class="token punctuation">)</span><span class="token punctuation">;</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div></code></pre>
+ </div>
+
+ <div><iframe class="live-sample-frame" src="https://mdn.mozillademos.org/en-US/docs/Web/Guide/CSS/Using_CSS_transitions$samples/duration_0_5s?revision=739089" frameborder="0" height="150" width="275"></iframe></div>
+ </div>
+
+ <div id="duration_1s" style="width: 251px; display: inline-block; margin-right: 1px; margin-bottom: 1px;">
+ <p><code>transition-duration: 1s</code></p>
+
+ <div style="display: none;">
+ <pre data-number="" class="brush:html  language-html"><code class=" language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>parent<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>box<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Lorem<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div></code></pre>
+
+ <pre data-number="" class="brush:css;  language-css"><code class=" language-css"><span class="token selector">.parent </span><span class="token punctuation">{</span> <span class="token property">width</span><span class="token punctuation">:</span> 250px<span class="token punctuation">;</span> <span class="token property">height</span><span class="token punctuation">:</span>125px<span class="token punctuation">;</span><span class="token punctuation">}</span>
+<span class="token selector">.box </span><span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">background-color</span><span class="token punctuation">:</span> red<span class="token punctuation">;</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 20px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 0px<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span> 0px<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span>absolute<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top -webkit-transform color<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-duration</span><span class="token punctuation">:</span>1s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-timing-function</span><span class="token punctuation">:</span> ease-in-out<span class="token punctuation">;</span>
+    <span class="token property">transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top transform color<span class="token punctuation">;</span>
+    <span class="token property">transition-duration</span><span class="token punctuation">:</span>1s<span class="token punctuation">;</span>
+    <span class="token property">transition-timing-function</span><span class="token punctuation">:</span> ease-in-out<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">.box1</span><span class="token punctuation">{</span>
+    <span class="token property">transform</span><span class="token punctuation">:</span> <span class="token function">rotate</span>(270deg)<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transform</span><span class="token punctuation">:</span> <span class="token function">rotate</span>(270deg)<span class="token punctuation">;</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+    <span class="token property">background-color</span><span class="token punctuation">:</span> blue<span class="token punctuation">;</span>
+    <span class="token property">color</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 18px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 150px<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span>25px<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span>absolute<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top -webkit-transform transform color<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-duration</span><span class="token punctuation">:</span>1s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-timing-function</span><span class="token punctuation">:</span> ease-in-out<span class="token punctuation">;</span>
+    <span class="token property">transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top transform -webkit-transform color<span class="token punctuation">;</span>
+    <span class="token property">transition-duration</span><span class="token punctuation">:</span>1s<span class="token punctuation">;</span>
+    <span class="token property">transition-timing-function</span><span class="token punctuation">:</span> ease-in-out<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div><div style="top: 266px;" data-start="15" class="line-number"></div><div style="top: 285px;" data-start="16" class="line-number"></div><div style="top: 304px;" data-start="17" class="line-number"></div><div style="top: 323px;" data-start="18" class="line-number"></div><div style="top: 342px;" data-start="19" class="line-number"></div><div style="top: 361px;" data-start="20" class="line-number"></div><div style="top: 380px;" data-start="21" class="line-number"></div><div style="top: 399px;" data-start="22" class="line-number"></div><div style="top: 418px;" data-start="23" class="line-number"></div><div style="top: 437px;" data-start="24" class="line-number"></div><div style="top: 456px;" data-start="25" class="line-number"></div><div style="top: 475px;" data-start="26" class="line-number"></div><div style="top: 494px;" data-start="27" class="line-number"></div><div style="top: 513px;" data-start="28" class="line-number"></div><div style="top: 532px;" data-start="29" class="line-number"></div><div style="top: 551px;" data-start="30" class="line-number"></div><div style="top: 570px;" data-start="31" class="line-number"></div><div style="top: 589px;" data-start="32" class="line-number"></div><div style="top: 608px;" data-start="33" class="line-number"></div><div style="top: 627px;" data-start="34" class="line-number"></div></code></pre>
+
+ <pre data-number="" class="brush:js  language-js"><code class=" language-js"><span class="token keyword">function</span> <span class="token function">updateTransition<span class="token punctuation">(</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">var</span> el <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector<span class="token punctuation">(</span></span><span class="token string">"div.box"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>el<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    el<span class="token punctuation">.</span>className <span class="token operator">=</span> <span class="token string">"box1"</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    el <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector<span class="token punctuation">(</span></span><span class="token string">"div.box1"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    el<span class="token punctuation">.</span>className <span class="token operator">=</span> <span class="token string">"box"</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+   
+  <span class="token keyword">return</span> el<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">var</span> intervalID <span class="token operator">=</span> window<span class="token punctuation">.</span><span class="token function">setInterval<span class="token punctuation">(</span></span>updateTransition<span class="token punctuation">,</span> <span class="token number">7000</span><span class="token punctuation">)</span><span class="token punctuation">;</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div></code></pre>
+ </div>
+
+ <div><iframe class="live-sample-frame" src="https://mdn.mozillademos.org/en-US/docs/Web/Guide/CSS/Using_CSS_transitions$samples/duration_1s?revision=739089" frameborder="0" height="150" width="275"></iframe></div>
+ </div>
+
+ <div id="duration_2s" style="width: 251px; display: inline-block; margin-right: 1px; margin-bottom: 1px;">
+ <p><code>transition-duration: 2s</code></p>
+
+ <div style="display: none;">
+ <pre data-number="" class="brush:html  language-html"><code class=" language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>parent<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>box<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Lorem<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div></code></pre>
+
+ <pre data-number="" class="brush:css;  language-css"><code class=" language-css"><span class="token selector">.parent </span><span class="token punctuation">{</span> <span class="token property">width</span><span class="token punctuation">:</span> 250px<span class="token punctuation">;</span> <span class="token property">height</span><span class="token punctuation">:</span>125px<span class="token punctuation">;</span><span class="token punctuation">}</span>
+<span class="token selector">.box </span><span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">background-color</span><span class="token punctuation">:</span> red<span class="token punctuation">;</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 20px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 0px<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span> 0px<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span>absolute<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top transform -webkit-transform color<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-timing-function</span><span class="token punctuation">:</span> ease-in-out<span class="token punctuation">;</span>
+    <span class="token property">transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top transform -webkit-transform color<span class="token punctuation">;</span>
+    <span class="token property">transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">transition-timing-function</span><span class="token punctuation">:</span> ease-in-out<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">.box1</span><span class="token punctuation">{</span>
+    <span class="token property">transform</span><span class="token punctuation">:</span> <span class="token function">rotate</span>(270deg)<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transform</span><span class="token punctuation">:</span> <span class="token function">rotate</span>(270deg)<span class="token punctuation">;</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+    <span class="token property">background-color</span><span class="token punctuation">:</span> blue<span class="token punctuation">;</span>
+    <span class="token property">color</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 18px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 150px<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span>25px<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span>absolute<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top transform -webkit-transform color<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-timing-function</span><span class="token punctuation">:</span> ease-in-out<span class="token punctuation">;</span>
+    <span class="token property">transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top transform -webkit-transform color<span class="token punctuation">;</span>
+    <span class="token property">transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">transition-timing-function</span><span class="token punctuation">:</span> ease-in-out<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div><div style="top: 266px;" data-start="15" class="line-number"></div><div style="top: 285px;" data-start="16" class="line-number"></div><div style="top: 304px;" data-start="17" class="line-number"></div><div style="top: 323px;" data-start="18" class="line-number"></div><div style="top: 342px;" data-start="19" class="line-number"></div><div style="top: 361px;" data-start="20" class="line-number"></div><div style="top: 380px;" data-start="21" class="line-number"></div><div style="top: 399px;" data-start="22" class="line-number"></div><div style="top: 418px;" data-start="23" class="line-number"></div><div style="top: 437px;" data-start="24" class="line-number"></div><div style="top: 456px;" data-start="25" class="line-number"></div><div style="top: 475px;" data-start="26" class="line-number"></div><div style="top: 494px;" data-start="27" class="line-number"></div><div style="top: 513px;" data-start="28" class="line-number"></div><div style="top: 532px;" data-start="29" class="line-number"></div><div style="top: 551px;" data-start="30" class="line-number"></div><div style="top: 570px;" data-start="31" class="line-number"></div><div style="top: 589px;" data-start="32" class="line-number"></div><div style="top: 608px;" data-start="33" class="line-number"></div><div style="top: 627px;" data-start="34" class="line-number"></div></code></pre>
+
+ <pre data-number="" class="brush:js  language-js"><code class=" language-js"><span class="token keyword">function</span> <span class="token function">updateTransition<span class="token punctuation">(</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">var</span> el <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector<span class="token punctuation">(</span></span><span class="token string">"div.box"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>el<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    el<span class="token punctuation">.</span>className <span class="token operator">=</span> <span class="token string">"box1"</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    el <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector<span class="token punctuation">(</span></span><span class="token string">"div.box1"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    el<span class="token punctuation">.</span>className <span class="token operator">=</span> <span class="token string">"box"</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+   
+  <span class="token keyword">return</span> el<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">var</span> intervalID <span class="token operator">=</span> window<span class="token punctuation">.</span><span class="token function">setInterval<span class="token punctuation">(</span></span>updateTransition<span class="token punctuation">,</span> <span class="token number">7000</span><span class="token punctuation">)</span><span class="token punctuation">;</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div></code></pre>
+ </div>
+
+ <div><iframe class="live-sample-frame" src="https://mdn.mozillademos.org/en-US/docs/Web/Guide/CSS/Using_CSS_transitions$samples/duration_2s?revision=739089" frameborder="0" height="150" width="275"></iframe></div>
+ </div>
+
+ <div id="duration_4s" style="width: 251px; display: inline-block; margin-right: 1px; margin-bottom: 1px;">
+ <p><code>transition-duration: 4s</code></p>
+
+ <div style="display: none;">
+ <pre data-number="" class="brush:html  language-html"><code class=" language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>parent<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>box<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Lorem<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div></code></pre>
+
+ <pre data-number="" class="brush:css;  language-css"><code class=" language-css"><span class="token selector">.parent </span><span class="token punctuation">{</span> <span class="token property">width</span><span class="token punctuation">:</span> 250px<span class="token punctuation">;</span> <span class="token property">height</span><span class="token punctuation">:</span>125px<span class="token punctuation">;</span><span class="token punctuation">}</span>
+<span class="token selector">.box </span><span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">background-color</span><span class="token punctuation">:</span> red<span class="token punctuation">;</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 20px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 0px<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span> 0px<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span>absolute<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top transform -webkit-transform color<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-duration</span><span class="token punctuation">:</span>4s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-timing-function</span><span class="token punctuation">:</span> ease-in-out<span class="token punctuation">;</span>
+    <span class="token property">transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top transform -webkit-transform color<span class="token punctuation">;</span>
+    <span class="token property">transition-duration</span><span class="token punctuation">:</span>4s<span class="token punctuation">;</span>
+    <span class="token property">transition-timing-function</span><span class="token punctuation">:</span> ease-in-out<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">.box1</span><span class="token punctuation">{</span>
+    <span class="token property">transform</span><span class="token punctuation">:</span> <span class="token function">rotate</span>(270deg)<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transform</span><span class="token punctuation">:</span> <span class="token function">rotate</span>(270deg)<span class="token punctuation">;</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+    <span class="token property">background-color</span><span class="token punctuation">:</span> blue<span class="token punctuation">;</span>
+    <span class="token property">color</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 18px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 150px<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span>25px<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span>absolute<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top transform -webkit-transform color<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-duration</span><span class="token punctuation">:</span>4s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-timing-function</span><span class="token punctuation">:</span> ease-in-out<span class="token punctuation">;</span>
+    <span class="token property">transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top transform -webkit-transform color<span class="token punctuation">;</span>
+    <span class="token property">transition-duration</span><span class="token punctuation">:</span>4s<span class="token punctuation">;</span>
+    <span class="token property">transition-timing-function</span><span class="token punctuation">:</span> ease-in-out<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div><div style="top: 266px;" data-start="15" class="line-number"></div><div style="top: 285px;" data-start="16" class="line-number"></div><div style="top: 304px;" data-start="17" class="line-number"></div><div style="top: 323px;" data-start="18" class="line-number"></div><div style="top: 342px;" data-start="19" class="line-number"></div><div style="top: 361px;" data-start="20" class="line-number"></div><div style="top: 380px;" data-start="21" class="line-number"></div><div style="top: 399px;" data-start="22" class="line-number"></div><div style="top: 418px;" data-start="23" class="line-number"></div><div style="top: 437px;" data-start="24" class="line-number"></div><div style="top: 456px;" data-start="25" class="line-number"></div><div style="top: 475px;" data-start="26" class="line-number"></div><div style="top: 494px;" data-start="27" class="line-number"></div><div style="top: 513px;" data-start="28" class="line-number"></div><div style="top: 532px;" data-start="29" class="line-number"></div><div style="top: 551px;" data-start="30" class="line-number"></div><div style="top: 570px;" data-start="31" class="line-number"></div><div style="top: 589px;" data-start="32" class="line-number"></div><div style="top: 608px;" data-start="33" class="line-number"></div><div style="top: 627px;" data-start="34" class="line-number"></div></code></pre>
+
+ <pre data-number="" class="brush:js  language-js"><code class=" language-js"><span class="token keyword">function</span> <span class="token function">updateTransition<span class="token punctuation">(</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">var</span> el <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector<span class="token punctuation">(</span></span><span class="token string">"div.box"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>el<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    el<span class="token punctuation">.</span>className <span class="token operator">=</span> <span class="token string">"box1"</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    el <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector<span class="token punctuation">(</span></span><span class="token string">"div.box1"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    el<span class="token punctuation">.</span>className <span class="token operator">=</span> <span class="token string">"box"</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+   
+  <span class="token keyword">return</span> el<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">var</span> intervalID <span class="token operator">=</span> window<span class="token punctuation">.</span><span class="token function">setInterval<span class="token punctuation">(</span></span>updateTransition<span class="token punctuation">,</span> <span class="token number">7000</span><span class="token punctuation">)</span><span class="token punctuation">;</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div></code></pre>
+ </div>
+
+ <div><iframe class="live-sample-frame" src="https://mdn.mozillademos.org/en-US/docs/Web/Guide/CSS/Using_CSS_transitions$samples/duration_4s?revision=739089" frameborder="0" height="150" width="275"></iframe></div>
+ </div>
+ </div>
+ </dd>
+ <dt><a href="/en-US/docs/Web/CSS/transition-timing-function" title="The CSS transition-timing-function property is used to describe how the intermediate values of the CSS&nbsp;properties being affected by a transition effect are calculated. This in essence lets you establish an acceleration curve, so that the speed of the transition can vary over its duration."><code>transition-timing-function</code></a></dt>
+ <dd><img alt="" src="/files/3434/TF_with_output_gt_than_1.png" style="width: 130px; height: 173px; float: left; margin-right: 5px;">Specifies a function to define how intermediate values for properties are computed. <em>Timing functions</em> determine how intermediate values of the transition are calculated. Most <a href="/en-US/docs/CSS/timing-function" title="/en-US/docs/CSS/timing-function">timing functions</a> can be specified by providing the graph of the corresponding function, as defined by four points defining a cubic bezier. You can also choose easing from&nbsp;<a class="external external-icon" href="http://easings.net/" title="http://easings.net/">Easing Functions Cheat Sheet</a>.
+ <div class="cleared">
+ <div id="ttf_ease" style="width: 251px; display: inline-block; margin-right: 1px; margin-bottom: 1px;">
+ <p><code>transition-timing-function: ease</code></p>
+
+ <div style="display: none;">
+ <pre data-number="" class="brush:html  language-html"><code class=" language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>parent<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>box<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Lorem<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div></code></pre>
+
+ <pre data-number="" class="brush:css;  language-css"><code class=" language-css"><span class="token selector">.parent </span><span class="token punctuation">{</span> <span class="token property">width</span><span class="token punctuation">:</span> 250px<span class="token punctuation">;</span> <span class="token property">height</span><span class="token punctuation">:</span>125px<span class="token punctuation">;</span><span class="token punctuation">}</span>
+<span class="token selector">.box </span><span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">background-color</span><span class="token punctuation">:</span> red<span class="token punctuation">;</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 20px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 0px<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span> 0px<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span>absolute<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-timing-function</span><span class="token punctuation">:</span> ease<span class="token punctuation">;</span>
+    <span class="token property">transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">transition-timing-function</span><span class="token punctuation">:</span> ease<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">.box1</span><span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+    <span class="token property">background-color</span><span class="token punctuation">:</span> blue<span class="token punctuation">;</span>
+    <span class="token property">color</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 18px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 150px<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span>25px<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span>absolute<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-timing-function</span><span class="token punctuation">:</span> ease<span class="token punctuation">;</span>
+    <span class="token property">transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">transition-timing-function</span><span class="token punctuation">:</span> ease<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div><div style="top: 266px;" data-start="15" class="line-number"></div><div style="top: 285px;" data-start="16" class="line-number"></div><div style="top: 304px;" data-start="17" class="line-number"></div><div style="top: 323px;" data-start="18" class="line-number"></div><div style="top: 342px;" data-start="19" class="line-number"></div><div style="top: 361px;" data-start="20" class="line-number"></div><div style="top: 380px;" data-start="21" class="line-number"></div><div style="top: 399px;" data-start="22" class="line-number"></div><div style="top: 418px;" data-start="23" class="line-number"></div><div style="top: 437px;" data-start="24" class="line-number"></div><div style="top: 456px;" data-start="25" class="line-number"></div><div style="top: 475px;" data-start="26" class="line-number"></div><div style="top: 494px;" data-start="27" class="line-number"></div><div style="top: 513px;" data-start="28" class="line-number"></div><div style="top: 532px;" data-start="29" class="line-number"></div><div style="top: 551px;" data-start="30" class="line-number"></div><div style="top: 570px;" data-start="31" class="line-number"></div><div style="top: 589px;" data-start="32" class="line-number"></div></code></pre>
+
+ <pre data-number="" class="brush:js  language-js"><code class=" language-js"><span class="token keyword">function</span> <span class="token function">updateTransition<span class="token punctuation">(</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">var</span> el <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector<span class="token punctuation">(</span></span><span class="token string">"div.box"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>el<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    el<span class="token punctuation">.</span>className <span class="token operator">=</span> <span class="token string">"box1"</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    el <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector<span class="token punctuation">(</span></span><span class="token string">"div.box1"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    el<span class="token punctuation">.</span>className <span class="token operator">=</span> <span class="token string">"box"</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+   
+  <span class="token keyword">return</span> el<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">var</span> intervalID <span class="token operator">=</span> window<span class="token punctuation">.</span><span class="token function">setInterval<span class="token punctuation">(</span></span>updateTransition<span class="token punctuation">,</span> <span class="token number">7000</span><span class="token punctuation">)</span><span class="token punctuation">;</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div></code></pre>
+ </div>
+
+ <div><iframe class="live-sample-frame" src="https://mdn.mozillademos.org/en-US/docs/Web/Guide/CSS/Using_CSS_transitions$samples/ttf_ease?revision=739089" frameborder="0" height="150" width="275"></iframe></div>
+ </div>
+
+ <div id="ttf_linear" style="width: 251px; display: inline-block; margin-right: 1px; margin-bottom: 1px;">
+ <p><code>transition-timing-function: linear</code></p>
+
+ <div style="display: none;">
+ <pre data-number="" class="brush:html  language-html"><code class=" language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>parent<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>box<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Lorem<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div></code></pre>
+
+ <pre data-number="" class="brush:css;  language-css"><code class=" language-css"><span class="token selector">.parent </span><span class="token punctuation">{</span> <span class="token property">width</span><span class="token punctuation">:</span> 250px<span class="token punctuation">;</span> <span class="token property">height</span><span class="token punctuation">:</span>125px<span class="token punctuation">;</span><span class="token punctuation">}</span>
+<span class="token selector">.box </span><span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">background-color</span><span class="token punctuation">:</span> red<span class="token punctuation">;</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 20px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 0px<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span> 0px<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span>absolute<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-timing-function</span><span class="token punctuation">:</span> linear<span class="token punctuation">;</span>
+    <span class="token property">transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">transition-timing-function</span><span class="token punctuation">:</span> linear<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">.box1</span><span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+    <span class="token property">background-color</span><span class="token punctuation">:</span> blue<span class="token punctuation">;</span>
+    <span class="token property">color</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 18px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 150px<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span>25px<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span>absolute<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-timing-function</span><span class="token punctuation">:</span> linear<span class="token punctuation">;</span>
+    <span class="token property">transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">transition-timing-function</span><span class="token punctuation">:</span> linear<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div><div style="top: 266px;" data-start="15" class="line-number"></div><div style="top: 285px;" data-start="16" class="line-number"></div><div style="top: 304px;" data-start="17" class="line-number"></div><div style="top: 323px;" data-start="18" class="line-number"></div><div style="top: 342px;" data-start="19" class="line-number"></div><div style="top: 361px;" data-start="20" class="line-number"></div><div style="top: 380px;" data-start="21" class="line-number"></div><div style="top: 399px;" data-start="22" class="line-number"></div><div style="top: 418px;" data-start="23" class="line-number"></div><div style="top: 437px;" data-start="24" class="line-number"></div><div style="top: 456px;" data-start="25" class="line-number"></div><div style="top: 475px;" data-start="26" class="line-number"></div><div style="top: 494px;" data-start="27" class="line-number"></div><div style="top: 513px;" data-start="28" class="line-number"></div><div style="top: 532px;" data-start="29" class="line-number"></div><div style="top: 551px;" data-start="30" class="line-number"></div><div style="top: 570px;" data-start="31" class="line-number"></div><div style="top: 589px;" data-start="32" class="line-number"></div></code></pre>
+
+ <pre data-number="" class="brush:js  language-js"><code class=" language-js"><span class="token keyword">function</span> <span class="token function">updateTransition<span class="token punctuation">(</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">var</span> el <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector<span class="token punctuation">(</span></span><span class="token string">"div.box"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>el<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    el<span class="token punctuation">.</span>className <span class="token operator">=</span> <span class="token string">"box1"</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    el <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector<span class="token punctuation">(</span></span><span class="token string">"div.box1"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    el<span class="token punctuation">.</span>className <span class="token operator">=</span> <span class="token string">"box"</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+   
+  <span class="token keyword">return</span> el<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">var</span> intervalID <span class="token operator">=</span> window<span class="token punctuation">.</span><span class="token function">setInterval<span class="token punctuation">(</span></span>updateTransition<span class="token punctuation">,</span> <span class="token number">7000</span><span class="token punctuation">)</span><span class="token punctuation">;</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div></code></pre>
+ </div>
+
+ <div><iframe class="live-sample-frame" src="https://mdn.mozillademos.org/en-US/docs/Web/Guide/CSS/Using_CSS_transitions$samples/ttf_linear?revision=739089" frameborder="0" height="150" width="275"></iframe></div>
+ </div>
+
+ <div id="ttf_stepend" style="width: 251px; display: inline-block; margin-right: 1px; margin-bottom: 1px;">
+ <p><code>transition-timing-function: step-end</code></p>
+
+ <div style="display: none;">
+ <pre data-number="" class="brush:html  language-html"><code class=" language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>parent<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>box<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Lorem<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div></code></pre>
+
+ <pre data-number="" class="brush:css;  language-css"><code class=" language-css"><span class="token selector">.parent </span><span class="token punctuation">{</span> <span class="token property">width</span><span class="token punctuation">:</span> 250px<span class="token punctuation">;</span> <span class="token property">height</span><span class="token punctuation">:</span>125px<span class="token punctuation">;</span><span class="token punctuation">}</span>
+<span class="token selector">.box </span><span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">background-color</span><span class="token punctuation">:</span> red<span class="token punctuation">;</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 20px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 0px<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span> 0px<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span>absolute<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-timing-function</span><span class="token punctuation">:</span> step-end<span class="token punctuation">;</span>
+    <span class="token property">transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">transition-timing-function</span><span class="token punctuation">:</span> step-end<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">.box1</span><span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+    <span class="token property">background-color</span><span class="token punctuation">:</span> blue<span class="token punctuation">;</span>
+    <span class="token property">color</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 18px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 150px<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span>25px<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span>absolute<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-timing-function</span><span class="token punctuation">:</span> step-end<span class="token punctuation">;</span>
+    <span class="token property">transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">transition-timing-function</span><span class="token punctuation">:</span> step-end<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div><div style="top: 266px;" data-start="15" class="line-number"></div><div style="top: 285px;" data-start="16" class="line-number"></div><div style="top: 304px;" data-start="17" class="line-number"></div><div style="top: 323px;" data-start="18" class="line-number"></div><div style="top: 342px;" data-start="19" class="line-number"></div><div style="top: 361px;" data-start="20" class="line-number"></div><div style="top: 380px;" data-start="21" class="line-number"></div><div style="top: 399px;" data-start="22" class="line-number"></div><div style="top: 418px;" data-start="23" class="line-number"></div><div style="top: 437px;" data-start="24" class="line-number"></div><div style="top: 456px;" data-start="25" class="line-number"></div><div style="top: 475px;" data-start="26" class="line-number"></div><div style="top: 494px;" data-start="27" class="line-number"></div><div style="top: 513px;" data-start="28" class="line-number"></div><div style="top: 532px;" data-start="29" class="line-number"></div><div style="top: 551px;" data-start="30" class="line-number"></div><div style="top: 570px;" data-start="31" class="line-number"></div><div style="top: 589px;" data-start="32" class="line-number"></div></code></pre>
+
+ <pre data-number="" class="brush:js  language-js"><code class=" language-js"><span class="token keyword">function</span> <span class="token function">updateTransition<span class="token punctuation">(</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">var</span> el <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector<span class="token punctuation">(</span></span><span class="token string">"div.box"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>el<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    el<span class="token punctuation">.</span>className <span class="token operator">=</span> <span class="token string">"box1"</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    el <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector<span class="token punctuation">(</span></span><span class="token string">"div.box1"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    el<span class="token punctuation">.</span>className <span class="token operator">=</span> <span class="token string">"box"</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+   
+  <span class="token keyword">return</span> el<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">var</span> intervalID <span class="token operator">=</span> window<span class="token punctuation">.</span><span class="token function">setInterval<span class="token punctuation">(</span></span>updateTransition<span class="token punctuation">,</span> <span class="token number">7000</span><span class="token punctuation">)</span><span class="token punctuation">;</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div></code></pre>
+ </div>
+
+ <div><iframe class="live-sample-frame" src="https://mdn.mozillademos.org/en-US/docs/Web/Guide/CSS/Using_CSS_transitions$samples/ttf_stepend?revision=739089" frameborder="0" height="150" width="275"></iframe></div>
+ </div>
+
+ <div id="ttf_step4end" style="width: 251px; display: inline-block; margin-right: 1px; margin-bottom: 1px;">
+ <p><code>transition-timing-function: steps(4, end)</code></p>
+
+ <div style="display: none;">
+ <pre data-number="" class="brush:html  language-html"><code class=" language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>parent<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>box<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Lorem<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div></code></pre>
+
+ <pre data-number="" class="brush:css;  language-css"><code class=" language-css"><span class="token selector">.parent </span><span class="token punctuation">{</span> <span class="token property">width</span><span class="token punctuation">:</span> 250px<span class="token punctuation">;</span> <span class="token property">height</span><span class="token punctuation">:</span>125px<span class="token punctuation">;</span><span class="token punctuation">}</span>
+<span class="token selector">.box </span><span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">background-color</span><span class="token punctuation">:</span> red<span class="token punctuation">;</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 20px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 0px<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span> 0px<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span>absolute<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-timing-function</span><span class="token punctuation">:</span> <span class="token function">steps</span>(4, end)<span class="token punctuation">;</span>
+    <span class="token property">transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">transition-timing-function</span><span class="token punctuation">:</span> <span class="token function">steps</span>(4, end)<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">.box1</span><span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+    <span class="token property">background-color</span><span class="token punctuation">:</span> blue<span class="token punctuation">;</span>
+    <span class="token property">color</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 18px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 150px<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span>25px<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span>absolute<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-timing-function</span><span class="token punctuation">:</span> <span class="token function">steps</span>(4, end)<span class="token punctuation">;</span>
+    <span class="token property">transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">transition-timing-function</span><span class="token punctuation">:</span> <span class="token function">steps</span>(4, end)<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div><div style="top: 266px;" data-start="15" class="line-number"></div><div style="top: 285px;" data-start="16" class="line-number"></div><div style="top: 304px;" data-start="17" class="line-number"></div><div style="top: 323px;" data-start="18" class="line-number"></div><div style="top: 342px;" data-start="19" class="line-number"></div><div style="top: 361px;" data-start="20" class="line-number"></div><div style="top: 380px;" data-start="21" class="line-number"></div><div style="top: 399px;" data-start="22" class="line-number"></div><div style="top: 418px;" data-start="23" class="line-number"></div><div style="top: 437px;" data-start="24" class="line-number"></div><div style="top: 456px;" data-start="25" class="line-number"></div><div style="top: 475px;" data-start="26" class="line-number"></div><div style="top: 494px;" data-start="27" class="line-number"></div><div style="top: 513px;" data-start="28" class="line-number"></div><div style="top: 532px;" data-start="29" class="line-number"></div><div style="top: 551px;" data-start="30" class="line-number"></div><div style="top: 570px;" data-start="31" class="line-number"></div><div style="top: 589px;" data-start="32" class="line-number"></div></code></pre>
+
+ <pre data-number="" class="brush:js  language-js"><code class=" language-js"><span class="token keyword">function</span> <span class="token function">updateTransition<span class="token punctuation">(</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">var</span> el <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector<span class="token punctuation">(</span></span><span class="token string">"div.box"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>el<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    el<span class="token punctuation">.</span>className <span class="token operator">=</span> <span class="token string">"box1"</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    el <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector<span class="token punctuation">(</span></span><span class="token string">"div.box1"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    el<span class="token punctuation">.</span>className <span class="token operator">=</span> <span class="token string">"box"</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+   
+  <span class="token keyword">return</span> el<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">var</span> intervalID <span class="token operator">=</span> window<span class="token punctuation">.</span><span class="token function">setInterval<span class="token punctuation">(</span></span>updateTransition<span class="token punctuation">,</span> <span class="token number">7000</span><span class="token punctuation">)</span><span class="token punctuation">;</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div></code></pre>
+ </div>
+
+ <div><iframe class="live-sample-frame" src="https://mdn.mozillademos.org/en-US/docs/Web/Guide/CSS/Using_CSS_transitions$samples/ttf_step4end?revision=739089" frameborder="0" height="150" width="275"></iframe></div>
+ </div>
+ </div>
+ </dd>
+ <dt><a href="/en-US/docs/Web/CSS/transition-delay" title="The transition-delay CSS property specifies the amount of time to wait between a change being requested to a property that is to be transitioned and the start of the transition effect."><code>transition-delay</code></a></dt>
+ <dd>Defines how long to wait between the time a property is changed and the transition actually begins.
+ <div>
+ <div id="delay_0_5s" style="width: 251px; display: inline-block; margin-right: 1px; margin-bottom: 1px;">
+ <p><code>transition-delay: 0.5s</code></p>
+
+ <div style="display: none;">
+ <pre data-number="" class="brush:html  language-html"><code class=" language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>parent<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>box<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Lorem<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div></code></pre>
+
+ <pre data-number="" class="brush:css;  language-css"><code class=" language-css"><span class="token selector">.parent </span><span class="token punctuation">{</span> <span class="token property">width</span><span class="token punctuation">:</span> 250px<span class="token punctuation">;</span> <span class="token property">height</span><span class="token punctuation">:</span>125px<span class="token punctuation">;</span><span class="token punctuation">}</span>
+<span class="token selector">.box </span><span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">background-color</span><span class="token punctuation">:</span> red<span class="token punctuation">;</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 20px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 0px<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span> 0px<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span>absolute<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-delay</span><span class="token punctuation">:</span>0.5s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-timing-function</span><span class="token punctuation">:</span> linear<span class="token punctuation">;</span>
+    <span class="token property">transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">transition-delay</span><span class="token punctuation">:</span>0.5s<span class="token punctuation">;</span>
+    <span class="token property">transition-timing-function</span><span class="token punctuation">:</span> linear<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">.box1</span><span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+    <span class="token property">background-color</span><span class="token punctuation">:</span> blue<span class="token punctuation">;</span>
+    <span class="token property">color</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 18px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 150px<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span>25px<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span>absolute<span class="token punctuation">;</span>
+     <span class="token property">-webkit-transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-delay</span><span class="token punctuation">:</span>0.5s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-timing-function</span><span class="token punctuation">:</span> linear<span class="token punctuation">;</span>
+    <span class="token property">transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">transition-delay</span><span class="token punctuation">:</span>0.5s<span class="token punctuation">;</span>
+    <span class="token property">transition-timing-function</span><span class="token punctuation">:</span> linear<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div><div style="top: 266px;" data-start="15" class="line-number"></div><div style="top: 285px;" data-start="16" class="line-number"></div><div style="top: 304px;" data-start="17" class="line-number"></div><div style="top: 323px;" data-start="18" class="line-number"></div><div style="top: 342px;" data-start="19" class="line-number"></div><div style="top: 361px;" data-start="20" class="line-number"></div><div style="top: 380px;" data-start="21" class="line-number"></div><div style="top: 399px;" data-start="22" class="line-number"></div><div style="top: 418px;" data-start="23" class="line-number"></div><div style="top: 437px;" data-start="24" class="line-number"></div><div style="top: 456px;" data-start="25" class="line-number"></div><div style="top: 475px;" data-start="26" class="line-number"></div><div style="top: 494px;" data-start="27" class="line-number"></div><div style="top: 513px;" data-start="28" class="line-number"></div><div style="top: 532px;" data-start="29" class="line-number"></div><div style="top: 551px;" data-start="30" class="line-number"></div><div style="top: 570px;" data-start="31" class="line-number"></div><div style="top: 589px;" data-start="32" class="line-number"></div><div style="top: 608px;" data-start="33" class="line-number"></div><div style="top: 627px;" data-start="34" class="line-number"></div><div style="top: 646px;" data-start="35" class="line-number"></div><div style="top: 665px;" data-start="36" class="line-number"></div></code></pre>
+
+ <pre data-number="" class="brush:js  language-js"><code class=" language-js"><span class="token keyword">function</span> <span class="token function">updateTransition<span class="token punctuation">(</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">var</span> el <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector<span class="token punctuation">(</span></span><span class="token string">"div.box"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>el<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    el<span class="token punctuation">.</span>className <span class="token operator">=</span> <span class="token string">"box1"</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    el <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector<span class="token punctuation">(</span></span><span class="token string">"div.box1"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    el<span class="token punctuation">.</span>className <span class="token operator">=</span> <span class="token string">"box"</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+   
+  <span class="token keyword">return</span> el<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">var</span> intervalID <span class="token operator">=</span> window<span class="token punctuation">.</span><span class="token function">setInterval<span class="token punctuation">(</span></span>updateTransition<span class="token punctuation">,</span> <span class="token number">7000</span><span class="token punctuation">)</span><span class="token punctuation">;</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div></code></pre>
+ </div>
+
+ <div><iframe class="live-sample-frame" src="https://mdn.mozillademos.org/en-US/docs/Web/Guide/CSS/Using_CSS_transitions$samples/delay_0_5s?revision=739089" frameborder="0" height="150" width="275"></iframe></div>
+ </div>
+
+ <div id="delay_1s" style="width: 251px; display: inline-block; margin-right: 1px; margin-bottom: 1px;">
+ <p><code>transition-delay: 1s</code></p>
+
+ <div style="display: none;">
+ <pre data-number="" class="brush:html  language-html"><code class=" language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>parent<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>box<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Lorem<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div></code></pre>
+
+ <pre data-number="" class="brush:css;  language-css"><code class=" language-css"><span class="token selector">.parent </span><span class="token punctuation">{</span> <span class="token property">width</span><span class="token punctuation">:</span> 250px<span class="token punctuation">;</span> <span class="token property">height</span><span class="token punctuation">:</span>125px<span class="token punctuation">;</span><span class="token punctuation">}</span>
+<span class="token selector">.box </span><span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">background-color</span><span class="token punctuation">:</span> red<span class="token punctuation">;</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 20px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 0px<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span> 0px<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span>absolute<span class="token punctuation">;</span>
+     <span class="token property">-webkit-transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-delay</span><span class="token punctuation">:</span>1s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-timing-function</span><span class="token punctuation">:</span> linear<span class="token punctuation">;</span>
+    <span class="token property">transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">transition-delay</span><span class="token punctuation">:</span>1s<span class="token punctuation">;</span>
+    <span class="token property">transition-timing-function</span><span class="token punctuation">:</span> linear<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">.box1</span><span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+    <span class="token property">background-color</span><span class="token punctuation">:</span> blue<span class="token punctuation">;</span>
+    <span class="token property">color</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 18px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 150px<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span>25px<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span>absolute<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-delay</span><span class="token punctuation">:</span>1s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-timing-function</span><span class="token punctuation">:</span> linear<span class="token punctuation">;</span>
+    <span class="token property">transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">transition-delay</span><span class="token punctuation">:</span>1s<span class="token punctuation">;</span>
+    <span class="token property">transition-timing-function</span><span class="token punctuation">:</span> linear<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div><div style="top: 266px;" data-start="15" class="line-number"></div><div style="top: 285px;" data-start="16" class="line-number"></div><div style="top: 304px;" data-start="17" class="line-number"></div><div style="top: 323px;" data-start="18" class="line-number"></div><div style="top: 342px;" data-start="19" class="line-number"></div><div style="top: 361px;" data-start="20" class="line-number"></div><div style="top: 380px;" data-start="21" class="line-number"></div><div style="top: 399px;" data-start="22" class="line-number"></div><div style="top: 418px;" data-start="23" class="line-number"></div><div style="top: 437px;" data-start="24" class="line-number"></div><div style="top: 456px;" data-start="25" class="line-number"></div><div style="top: 475px;" data-start="26" class="line-number"></div><div style="top: 494px;" data-start="27" class="line-number"></div><div style="top: 513px;" data-start="28" class="line-number"></div><div style="top: 532px;" data-start="29" class="line-number"></div><div style="top: 551px;" data-start="30" class="line-number"></div><div style="top: 570px;" data-start="31" class="line-number"></div><div style="top: 589px;" data-start="32" class="line-number"></div><div style="top: 608px;" data-start="33" class="line-number"></div><div style="top: 627px;" data-start="34" class="line-number"></div><div style="top: 646px;" data-start="35" class="line-number"></div><div style="top: 665px;" data-start="36" class="line-number"></div></code></pre>
+
+ <pre data-number="" class="brush:js  language-js"><code class=" language-js"><span class="token keyword">function</span> <span class="token function">updateTransition<span class="token punctuation">(</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">var</span> el <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector<span class="token punctuation">(</span></span><span class="token string">"div.box"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>el<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    el<span class="token punctuation">.</span>className <span class="token operator">=</span> <span class="token string">"box1"</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    el <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector<span class="token punctuation">(</span></span><span class="token string">"div.box1"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    el<span class="token punctuation">.</span>className <span class="token operator">=</span> <span class="token string">"box"</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+   
+  <span class="token keyword">return</span> el<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">var</span> intervalID <span class="token operator">=</span> window<span class="token punctuation">.</span><span class="token function">setInterval<span class="token punctuation">(</span></span>updateTransition<span class="token punctuation">,</span> <span class="token number">7000</span><span class="token punctuation">)</span><span class="token punctuation">;</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div></code></pre>
+ </div>
+
+ <div><iframe class="live-sample-frame" src="https://mdn.mozillademos.org/en-US/docs/Web/Guide/CSS/Using_CSS_transitions$samples/delay_1s?revision=739089" frameborder="0" height="150" width="275"></iframe></div>
+ </div>
+
+ <div id="delay_2s" style="width: 251px; display: inline-block; margin-right: 1px; margin-bottom: 1px;">
+ <p><code>transition-delay: 2s</code></p>
+
+ <div style="display: none;">
+ <pre data-number="" class="brush:html  language-html"><code class=" language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>parent<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>box<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Lorem<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div></code></pre>
+
+ <pre data-number="" class="brush:css;  language-css"><code class=" language-css"><span class="token selector">.parent </span><span class="token punctuation">{</span> <span class="token property">width</span><span class="token punctuation">:</span> 250px<span class="token punctuation">;</span> <span class="token property">height</span><span class="token punctuation">:</span>125px<span class="token punctuation">;</span><span class="token punctuation">}</span>
+<span class="token selector">.box </span><span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">background-color</span><span class="token punctuation">:</span> red<span class="token punctuation">;</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 20px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 0px<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span> 0px<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span>absolute<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-delay</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-timing-function</span><span class="token punctuation">:</span> linear<span class="token punctuation">;</span>
+    <span class="token property">transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">transition-delay</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">transition-timing-function</span><span class="token punctuation">:</span> linear<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">.box1</span><span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+    <span class="token property">background-color</span><span class="token punctuation">:</span> blue<span class="token punctuation">;</span>
+    <span class="token property">color</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 18px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 150px<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span>25px<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span>absolute<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-delay</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-timing-function</span><span class="token punctuation">:</span> linear<span class="token punctuation">;</span>
+    <span class="token property">transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">transition-delay</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">transition-timing-function</span><span class="token punctuation">:</span> linear<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div><div style="top: 266px;" data-start="15" class="line-number"></div><div style="top: 285px;" data-start="16" class="line-number"></div><div style="top: 304px;" data-start="17" class="line-number"></div><div style="top: 323px;" data-start="18" class="line-number"></div><div style="top: 342px;" data-start="19" class="line-number"></div><div style="top: 361px;" data-start="20" class="line-number"></div><div style="top: 380px;" data-start="21" class="line-number"></div><div style="top: 399px;" data-start="22" class="line-number"></div><div style="top: 418px;" data-start="23" class="line-number"></div><div style="top: 437px;" data-start="24" class="line-number"></div><div style="top: 456px;" data-start="25" class="line-number"></div><div style="top: 475px;" data-start="26" class="line-number"></div><div style="top: 494px;" data-start="27" class="line-number"></div><div style="top: 513px;" data-start="28" class="line-number"></div><div style="top: 532px;" data-start="29" class="line-number"></div><div style="top: 551px;" data-start="30" class="line-number"></div><div style="top: 570px;" data-start="31" class="line-number"></div><div style="top: 589px;" data-start="32" class="line-number"></div><div style="top: 608px;" data-start="33" class="line-number"></div><div style="top: 627px;" data-start="34" class="line-number"></div><div style="top: 646px;" data-start="35" class="line-number"></div><div style="top: 665px;" data-start="36" class="line-number"></div></code></pre>
+
+ <pre data-number="" class="brush:js  language-js"><code class=" language-js"><span class="token keyword">function</span> <span class="token function">updateTransition<span class="token punctuation">(</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">var</span> el <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector<span class="token punctuation">(</span></span><span class="token string">"div.box"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>el<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    el<span class="token punctuation">.</span>className <span class="token operator">=</span> <span class="token string">"box1"</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    el <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector<span class="token punctuation">(</span></span><span class="token string">"div.box1"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    el<span class="token punctuation">.</span>className <span class="token operator">=</span> <span class="token string">"box"</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+   
+  <span class="token keyword">return</span> el<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">var</span> intervalID <span class="token operator">=</span> window<span class="token punctuation">.</span><span class="token function">setInterval<span class="token punctuation">(</span></span>updateTransition<span class="token punctuation">,</span> <span class="token number">7000</span><span class="token punctuation">)</span><span class="token punctuation">;</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div></code></pre>
+ </div>
+
+ <div><iframe class="live-sample-frame" src="https://mdn.mozillademos.org/en-US/docs/Web/Guide/CSS/Using_CSS_transitions$samples/delay_2s?revision=739089" frameborder="0" height="150" width="275"></iframe></div>
+ </div>
+
+ <div id="delay_4s" style="width: 251px; display: inline-block; margin-right: 1px; margin-bottom: 1px;">
+ <p><code>transition-delay: 4s</code></p>
+
+ <div style="display: none;">
+ <pre data-number="" class="brush:html  language-html"><code class=" language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>parent<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>box<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Lorem<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div></code></pre>
+
+ <pre data-number="" class="brush:css;  language-css"><code class=" language-css"><span class="token selector">.parent </span><span class="token punctuation">{</span> <span class="token property">width</span><span class="token punctuation">:</span> 250px<span class="token punctuation">;</span> <span class="token property">height</span><span class="token punctuation">:</span>125px<span class="token punctuation">;</span><span class="token punctuation">}</span>
+<span class="token selector">.box </span><span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">background-color</span><span class="token punctuation">:</span> red<span class="token punctuation">;</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 20px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 0px<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span> 0px<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span>absolute<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-delay</span><span class="token punctuation">:</span>4s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-timing-function</span><span class="token punctuation">:</span> ease-in-out<span class="token punctuation">;</span>
+    <span class="token property">transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">transition-delay</span><span class="token punctuation">:</span>4s<span class="token punctuation">;</span>
+    <span class="token property">transition-timing-function</span><span class="token punctuation">:</span> ease-in-out<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector">.box1</span><span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+    <span class="token property">background-color</span><span class="token punctuation">:</span> blue<span class="token punctuation">;</span>
+    <span class="token property">color</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 18px<span class="token punctuation">;</span>
+    <span class="token property">left</span><span class="token punctuation">:</span> 150px<span class="token punctuation">;</span>
+    <span class="token property">top</span><span class="token punctuation">:</span>25px<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span>absolute<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-delay</span><span class="token punctuation">:</span>4s<span class="token punctuation">;</span>
+    <span class="token property">-webkit-transition-timing-function</span><span class="token punctuation">:</span> ease-in-out<span class="token punctuation">;</span>
+    <span class="token property">transition-property</span><span class="token punctuation">:</span> width height background-color font-size left top color<span class="token punctuation">;</span>
+    <span class="token property">transition-duration</span><span class="token punctuation">:</span>2s<span class="token punctuation">;</span>
+    <span class="token property">transition-delay</span><span class="token punctuation">:</span>4s<span class="token punctuation">;</span>
+    <span class="token property">transition-timing-function</span><span class="token punctuation">:</span> ease-in-out<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div><div style="top: 266px;" data-start="15" class="line-number"></div><div style="top: 285px;" data-start="16" class="line-number"></div><div style="top: 304px;" data-start="17" class="line-number"></div><div style="top: 323px;" data-start="18" class="line-number"></div><div style="top: 342px;" data-start="19" class="line-number"></div><div style="top: 361px;" data-start="20" class="line-number"></div><div style="top: 380px;" data-start="21" class="line-number"></div><div style="top: 399px;" data-start="22" class="line-number"></div><div style="top: 418px;" data-start="23" class="line-number"></div><div style="top: 437px;" data-start="24" class="line-number"></div><div style="top: 456px;" data-start="25" class="line-number"></div><div style="top: 475px;" data-start="26" class="line-number"></div><div style="top: 494px;" data-start="27" class="line-number"></div><div style="top: 513px;" data-start="28" class="line-number"></div><div style="top: 532px;" data-start="29" class="line-number"></div><div style="top: 551px;" data-start="30" class="line-number"></div><div style="top: 570px;" data-start="31" class="line-number"></div><div style="top: 589px;" data-start="32" class="line-number"></div><div style="top: 608px;" data-start="33" class="line-number"></div><div style="top: 627px;" data-start="34" class="line-number"></div><div style="top: 646px;" data-start="35" class="line-number"></div><div style="top: 665px;" data-start="36" class="line-number"></div></code></pre>
+
+ <pre data-number="" class="brush:js  language-js"><code class=" language-js"><span class="token keyword">function</span> <span class="token function">updateTransition<span class="token punctuation">(</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">var</span> el <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector<span class="token punctuation">(</span></span><span class="token string">"div.box"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>el<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    el<span class="token punctuation">.</span>className <span class="token operator">=</span> <span class="token string">"box1"</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    el <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector<span class="token punctuation">(</span></span><span class="token string">"div.box1"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    el<span class="token punctuation">.</span>className <span class="token operator">=</span> <span class="token string">"box"</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+   
+  <span class="token keyword">return</span> el<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">var</span> intervalID <span class="token operator">=</span> window<span class="token punctuation">.</span><span class="token function">setInterval<span class="token punctuation">(</span></span>updateTransition<span class="token punctuation">,</span> <span class="token number">7000</span><span class="token punctuation">)</span><span class="token punctuation">;</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div></code></pre>
+ </div>
+
+ <div><iframe class="live-sample-frame" src="https://mdn.mozillademos.org/en-US/docs/Web/Guide/CSS/Using_CSS_transitions$samples/delay_4s?revision=739089" frameborder="0" height="150" width="275"></iframe></div>
+ </div>
+ </div>
+ </dd>
+</dl>
+
+<p>The shorthand CSS syntax is written as follows:</p>
+
+<pre data-number="" class="brush:css;  language-css"><code class=" language-css"><span class="token selector">div </span><span class="token punctuation">{</span>
+    <span class="token property">transition</span><span class="token punctuation">:</span> &lt;property&gt; &lt;duration&gt; &lt;timing-function&gt; &lt;delay&gt;<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div></code></pre>
+
+<h2 id="Detecting_the_completion_of_a_transition">Detecting the completion of a transition</h2>
+
+<p>There is a single event that is fired when transitions complete. In all standard-compliant browser, the event is <code>transitionend</code>, in WebKit it is <code>webkitTransitionEnd</code>. See the compatibility table at the bottom for more.&nbsp;The <code>transitionend</code>&nbsp;event offers two properties:</p>
+
+<dl>
+ <dt><code>propertyName</code></dt>
+ <dd>A string indicating the name of the CSS property whose transition completed.</dd>
+ <dt><code>elapsedTime</code></dt>
+ <dd>A float indicating the number of seconds the transition had been running at the time the event fired. This value isn't affected by the value of <a href="/en-US/docs/Web/CSS/transition-delay" title="The transition-delay CSS property specifies the amount of time to wait between a change being requested to a property that is to be transitioned and the start of the transition effect."><code>transition-delay</code></a>.</dd>
+</dl>
+
+<p>As usual, you can use the <a class="new" href="/en-US/docs/Web/API/element.addEventListener" title="The documentation about this has not yet been written; please consider contributing!"><code>element.addEventListener()</code></a> method to monitor for this event:</p>
+
+<pre data-number="" class="brush: js  language-js"><code class=" language-js">el<span class="token punctuation">.</span><span class="token function">addEventListener<span class="token punctuation">(</span></span><span class="token string">"transitionend"</span><span class="token punctuation">,</span> updateTransition<span class="token punctuation">,</span> <span class="token keyword">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span><div style="top: 0px;" data-start="1" class="line-number"></div></code></pre>
+
+<div class="note"><strong>Note:</strong> The <code>transitionend</code> event doesn't fire if the transition is aborted because the animating property's value is changed before the transition is completed.</div>
+
+<h2 id="When_property_value_lists_are_of_different_lengths">When property value lists are of different lengths</h2>
+
+<p>If any property's list of values is shorter than the others, its values are repeated to make them match. For example:</p>
+
+<pre data-number="" class="brush: css  language-css"><code class=" language-css"><span class="token selector">div </span><span class="token punctuation">{</span>
+  <span class="token property">transition-property</span><span class="token punctuation">:</span> opacity, left, top, height<span class="token punctuation">;</span>
+  <span class="token property">transition-duration</span><span class="token punctuation">:</span> 3s, 5s<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div></code></pre>
+
+<p>This is treated as if it were:</p>
+
+<pre data-number="" class="brush: css  language-css"><code class=" language-css"><span class="token selector">div </span><span class="token punctuation">{</span>
+  <span class="token property">transition-property</span><span class="token punctuation">:</span> opacity, left, top, height<span class="token punctuation">;</span>
+  <span class="token property">transition-duration</span><span class="token punctuation">:</span> 3s, 5s, 3s, 5s<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div></code></pre>
+
+<p>Similarly, if any property's value list is longer than that for <a href="/en-US/docs/Web/CSS/transition-property" title="The transition-property CSS property is used to specify the names of CSS properties to which a transition effect should be applied."><code>transition-property</code></a>, it's truncated, so if you have the following CSS:</p>
+
+<pre data-number="" class="brush: css  language-css"><code class=" language-css"><span class="token selector">div </span><span class="token punctuation">{</span>
+  <span class="token property">transition-property</span><span class="token punctuation">:</span> opacity, left<span class="token punctuation">;</span>
+  <span class="token property">transition-duration</span><span class="token punctuation">:</span> 3s, 5s, 2s, 1s<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div></code></pre>
+
+<p>This gets interpreted as:</p>
+
+<pre data-number="" class="brush: css  language-css"><code class=" language-css"><span class="token selector">div </span><span class="token punctuation">{</span>
+  <span class="token property">transition-property</span><span class="token punctuation">:</span> opacity, left<span class="token punctuation">;</span>
+  <span class="token property">transition-duration</span><span class="token punctuation">:</span> 3s, 5s<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div></code></pre>
+
+<h2 id="A_simple_example">A simple example</h2>
+
+<p>This example performs a four-second font size transition with a two-second delay between the time the user mouses over the element and the beginning of the animation effect:</p>
+
+<pre data-number="" class="brush: css  language-css"><code class=" language-css"><span class="token selector">#delay1 </span><span class="token punctuation">{</span>
+  <span class="token property">position</span><span class="token punctuation">:</span> relative<span class="token punctuation">;</span>
+  <span class="token property">transition-property</span><span class="token punctuation">:</span> font-size<span class="token punctuation">;</span>
+  <span class="token property">transition-duration</span><span class="token punctuation">:</span> 4s<span class="token punctuation">;</span>
+  <span class="token property">transition-delay</span><span class="token punctuation">:</span> 2s<span class="token punctuation">;</span>
+  <span class="token property">font-size</span><span class="token punctuation">:</span> 14px<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">#delay1:hover </span><span class="token punctuation">{</span>
+  <span class="token property">transition-property</span><span class="token punctuation">:</span> font-size<span class="token punctuation">;</span>
+  <span class="token property">transition-duration</span><span class="token punctuation">:</span> 4s<span class="token punctuation">;</span>
+  <span class="token property">transition-delay</span><span class="token punctuation">:</span> 2s<span class="token punctuation">;</span>
+  <span class="token property">font-size</span><span class="token punctuation">:</span> 36px<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div></code></pre>
+
+<h2 id="Using_transitions_when_highlighting_menus">Using transitions when highlighting menus</h2>
+
+<p>A common use of CSS is to highlight items in a menu as the user hovers the mouse cursor over them. It's easy to use transitions to make the effect even more attractive.</p>
+
+<p>Before we look at code snippets, you might want to <a class="external external-icon" href="/samples/cssref/transitions/sample2" title="http://developer.mozilla.org/samples/cssref/transitions/sample2/">take a look at the live demo</a> (assuming your browser supports transitions). You can also take a <a class="external external-icon" href="/samples/cssref/transitions/sample2/transitions.css" title="http://developer.mozilla.org/samples/cssref/transitions/sample2/transitions.css">look directly at the CSS</a> it uses.</p>
+
+<p>First we set up the menu using HTML:</p>
+
+<pre data-number="" class="brush: html  language-html"><code class=" language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>sidebar<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>menuButton<span class="token punctuation">"</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>home<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Home<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>menuButton<span class="token punctuation">"</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>about<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>About<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>menuButton<span class="token punctuation">"</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>contact<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Contact Us<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>menuButton<span class="token punctuation">"</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>links<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Links<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div></code></pre>
+
+<p>Then we build the CSS to implement the look and feel of our menu. The relevant portions are shown here:</p>
+
+<pre data-number="" class="brush: css  language-css"><code class=" language-css"><span class="token selector">.menuButton </span><span class="token punctuation">{</span>
+  <span class="token property">position</span><span class="token punctuation">:</span> relative<span class="token punctuation">;</span>
+  <span class="token property">transition-property</span><span class="token punctuation">:</span> background-color, color<span class="token punctuation">;</span>
+  <span class="token property">transition-duration</span><span class="token punctuation">:</span> 1s<span class="token punctuation">;</span>
+  <span class="token property">transition-timing-function</span><span class="token punctuation">:</span> ease-out<span class="token punctuation">;</span>
+  <span class="token property">text-align</span><span class="token punctuation">:</span> left<span class="token punctuation">;</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> grey<span class="token punctuation">;</span>
+  <span class="token property">left</span><span class="token punctuation">:</span> 5px<span class="token punctuation">;</span>
+  <span class="token property">top</span><span class="token punctuation">:</span> 5px<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> 26px<span class="token punctuation">;</span>
+  <span class="token property">color</span><span class="token punctuation">:</span> white<span class="token punctuation">;</span>
+  <span class="token property">border-color</span><span class="token punctuation">:</span> black<span class="token punctuation">;</span>
+  <span class="token property">font-family</span><span class="token punctuation">:</span> sans-serif<span class="token punctuation">;</span>
+  <span class="token property">font-size</span><span class="token punctuation">:</span> 20px<span class="token punctuation">;</span>
+  <span class="token property">text-decoration</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span>
+  <span class="token property">box-shadow</span><span class="token punctuation">:</span> 2px 2px 1px black<span class="token punctuation">;</span>
+  <span class="token property">padding</span><span class="token punctuation">:</span> 2px 4px<span class="token punctuation">;</span>
+  <span class="token property">border</span><span class="token punctuation">:</span> solid 1px black<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">.menuButton:hover </span><span class="token punctuation">{</span>
+  <span class="token property">position</span><span class="token punctuation">:</span> relative<span class="token punctuation">;</span>
+  <span class="token property">transition-property</span><span class="token punctuation">:</span> background-color, color<span class="token punctuation">;</span>
+  <span class="token property">transition-duration</span><span class="token punctuation">:</span> 1s<span class="token punctuation">;</span>
+  <span class="token property">transition-timing-function</span><span class="token punctuation">:</span> ease-out<span class="token punctuation">;</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span>white<span class="token punctuation">;</span>
+  <span class="token property">color</span><span class="token punctuation">:</span>black<span class="token punctuation">;</span>
+  <span class="token property">box-shadow</span><span class="token punctuation">:</span> 2px 2px 1px black<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div><div style="top: 266px;" data-start="15" class="line-number"></div><div style="top: 285px;" data-start="16" class="line-number"></div><div style="top: 304px;" data-start="17" class="line-number"></div><div style="top: 323px;" data-start="18" class="line-number"></div><div style="top: 342px;" data-start="19" class="line-number"></div><div style="top: 361px;" data-start="20" class="line-number"></div><div style="top: 380px;" data-start="21" class="line-number"></div><div style="top: 399px;" data-start="22" class="line-number"></div><div style="top: 418px;" data-start="23" class="line-number"></div><div style="top: 437px;" data-start="24" class="line-number"></div><div style="top: 456px;" data-start="25" class="line-number"></div><div style="top: 475px;" data-start="26" class="line-number"></div><div style="top: 494px;" data-start="27" class="line-number"></div><div style="top: 513px;" data-start="28" class="line-number"></div><div style="top: 532px;" data-start="29" class="line-number"></div></code></pre>
+
+<p>This CSS&nbsp;establishes the look of the menu, with the background and text colors both changing when the element is in its <a href="/en-US/docs/Web/CSS/:hover" title="The :hover CSS pseudo-class matches when the user designates an element with a pointing device, but does not necessarily activate it. This style may be overridden by any other link-related pseudo-classes, that is :link, :visited, and :active, appearing in subsequent rules. In order to style appropriately links, you need to put the :hover rule after the :link and :visited rules but before the :active one, as defined by the LVHA-order: :link — :visited — :hover — :active."><code>:hover</code></a> state.</p>
+
+<p>Instead of describing the effect at length, you can take a <a href="/samples/cssref/transitions/sample2" title="https://developer.mozilla.org/samples/cssref/transitions/sample2">look at the live sample</a> if your <a class="external external-icon" href="/en/CSS/CSS_transitions#Browser_compatibility" title="en/CSS/CSS_transitions#Browser_compatibility">browser has transitions support</a>.</p>
+
+<h2 id="Using_transitions_to_make_JavaScript_functionality_smooth">Using transitions to make JavaScript functionality smooth</h2>
+
+<p>Transitions are a great tool to make things look much smoother without having to do anything to your JavaScript functionality. Take the following example.</p>
+
+<pre data-number="" class="brush: html  language-html"><code class=" language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">&gt;</span></span>Click anywhere to move the ball<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>foo<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div></code></pre>
+
+<p>Using JavaScript you can make the effect of moving the ball to a certain position happen:</p>
+
+<pre data-number="" class="brush: js  language-js"><code class=" language-js"><span class="token keyword">var</span> f <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById<span class="token punctuation">(</span></span><span class="token string">'foo'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+document<span class="token punctuation">.</span><span class="token function">addEventListener<span class="token punctuation">(</span></span><span class="token string">'click'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>ev<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    f<span class="token punctuation">.</span>style<span class="token punctuation">.</span>left <span class="token operator">=</span> <span class="token punctuation">(</span>ev<span class="token punctuation">.</span>clientX<span class="token number">-25</span><span class="token punctuation">)</span><span class="token operator">+</span><span class="token string">'px'</span><span class="token punctuation">;</span>
+    f<span class="token punctuation">.</span>style<span class="token punctuation">.</span>top <span class="token operator">=</span> <span class="token punctuation">(</span>ev<span class="token punctuation">.</span>clientY<span class="token number">-25</span><span class="token punctuation">)</span><span class="token operator">+</span><span class="token string">'px'</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token keyword">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div></code></pre>
+
+<p>With CSS you can make it smooth without any extra effort. Simply add a transition to the element and any change will happen smoothly:</p>
+
+<pre data-number="" class="brush: css  language-css"><code class=" language-css"><span class="token selector">p </span><span class="token punctuation">{</span>
+  <span class="token property">padding-left</span><span class="token punctuation">:</span> 60px<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">#foo </span><span class="token punctuation">{</span>
+  <span class="token property">border-radius</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> 50px<span class="token punctuation">;</span>
+  <span class="token property">background</span><span class="token punctuation">:</span> #c00<span class="token punctuation">;</span>
+  <span class="token property">position</span><span class="token punctuation">:</span> absolute<span class="token punctuation">;</span>
+  <span class="token property">top</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
+  <span class="token property">left</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
+  <span class="token property">transition</span><span class="token punctuation">:</span>  all 1s<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><div style="top: 0px;" data-start="1" class="line-number"></div><div style="top: 19px;" data-start="2" class="line-number"></div><div style="top: 38px;" data-start="3" class="line-number"></div><div style="top: 57px;" data-start="4" class="line-number"></div><div style="top: 76px;" data-start="5" class="line-number"></div><div style="top: 95px;" data-start="6" class="line-number"></div><div style="top: 114px;" data-start="7" class="line-number"></div><div style="top: 133px;" data-start="8" class="line-number"></div><div style="top: 152px;" data-start="9" class="line-number"></div><div style="top: 171px;" data-start="10" class="line-number"></div><div style="top: 190px;" data-start="11" class="line-number"></div><div style="top: 209px;" data-start="12" class="line-number"></div><div style="top: 228px;" data-start="13" class="line-number"></div><div style="top: 247px;" data-start="14" class="line-number"></div></code></pre>
+
+<p>You can play with this here: <a class="external external-icon" href="http://jsfiddle.net/RwtHn/5/" title="http://jsfiddle.net/RwtHn/5/">http://jsfiddle.net/RwtHn/5/</a></p>
+
+<h2 id="Specifications">Specifications</h2>
+
+<table class="standard-table">
+ <thead>
+  <tr>
+   <th scope="col">Specification</th>
+   <th scope="col">Status</th>
+   <th scope="col">Comment</th>
+  </tr>
+ </thead>
+ <tbody>
+  <tr>
+   <td><a class="external external-icon" href="http://dev.w3.org/csswg/css-transitions/" hreflang="en" title="The 'CSS Transitions' specification" lang="en">CSS Transitions</a></td>
+   <td><span class="spec-WD">Working Draft</span></td>
+   <td>Initial specification.</td>
+  </tr>
+ </tbody>
+</table>
+
+<h2 id="Browser_compatibility">Browser compatibility</h2>
+
+<p></p><div class="htab"> 
+    <a id="AutoCompatibilityTable" name="AutoCompatibilityTable"></a> 
+    <ul> 
+        <li class="selected"><a>Desktop</a></li> 
+        <li><a>Mobile</a></li> 
+    </ul> 
+<div style="display: block;" id="compat-desktop">
+<table class="compat-table">
+ <tbody>
+  <tr>
+   <th>Feature</th>
+   <th>Chrome</th>
+   <th>Firefox (Gecko)</th>
+   <th>Internet Explorer</th>
+   <th>Opera</th>
+   <th>Safari (WebKit)</th>
+  </tr>
+  <tr>
+   <td>Basic support</td>
+   <td>1.0 <span class="inlineIndicator prefixBox prefixBoxInline" title="prefix">-webkit</span><br>
+    26.0</td>
+   <td><a href="/en-US/Firefox/Releases/4" title="Released on 2011-03-22.">4.0</a> (2.0) <span class="inlineIndicator prefixBox prefixBoxInline" title="prefix">-moz</span><br>
+    <a href="/en-US/Firefox/Releases/16" title="Released on 2012-10-09.">16.0</a> (16.0)</td>
+   <td>10</td>
+   <td>10.5 <span class="inlineIndicator prefixBox prefixBoxInline" title="prefix">-o</span><br>
+    12.10</td>
+   <td>3.2 <span class="inlineIndicator prefixBox prefixBoxInline" title="prefix">-webkit</span></td>
+  </tr>
+  <tr>
+   <td><code>transitionend</code> event</td>
+   <td>1.0 as <code>webkitTransitionEnd</code><br>
+    26.0? as <code>transitionend</code></td>
+   <td><a href="/en-US/Firefox/Releases/4" title="Released on 2011-03-22.">4.0</a> (2.0)</td>
+   <td>10</td>
+   <td>10.5 as <code>oTransitionEnd</code><br>
+    12 as <code>otransitionend</code><br>
+    12.10 as <code>transitionend</code></td>
+   <td>3.2 as <code>webkitTransitionEnd</code><br>
+    6.0? as <code>transitionend</code></td>
+  </tr>
+ </tbody>
+</table>
+</div><div style="display: none;" id="compat-mobile">
+<table class="compat-table">
+ <tbody>
+  <tr>
+   <th>Feature</th>
+   <th>Android</th>
+   <th>Firefox Mobile (Gecko)</th>
+   <th>IE&nbsp;Phone</th>
+   <th>Opera Mobile</th>
+   <th>Safari Mobile</th>
+  </tr>
+  <tr>
+   <td>Basic support</td>
+   <td>2.1</td>
+   <td>4.0 (2.0) <span class="inlineIndicator prefixBox prefixBoxInline" title="prefix">-moz</span><br>
+    16.0 (16.0)</td>
+   <td>10</td>
+   <td>10 <span class="inlineIndicator prefixBox prefixBoxInline" title="prefix">-o</span><br>
+    12.10</td>
+   <td>3.2</td>
+  </tr>
+  <tr>
+   <td><code>transitionend</code> event</td>
+   <td>2.1 as <code>webkitTransitionEnd</code></td>
+   <td>4.0 (2.0)</td>
+   <td>10</td>
+   <td>10 as <code>oTransitionEnd</code><br>
+    12 as <code>otransitionend</code><br>
+    12.10 as <code>transitionend</code></td>
+   <td>3.2 as <code>webkitTransitionEnd</code></td>
+  </tr>
+ </tbody>
+</table>
+</div></div><p></p>
 
 
 
-    <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
-    <script src="js/main.js"></script>
+
+
+<h2 id="See_also">See also</h2>
+
+<ul>
+ <li><span class="external external-icon"><a class="external external-icon" href="http://techstream.org/Web-Design/Dock-Menu-with-CSS3" title="CSS3 Dock Menu using CSS transitions">CSS3 Dock Menu</a> using CSS transitions</span></li>
+ <li>The <a href="/en-US/docs/Web/API/TransitionEvent" title="The TransitionEvent interface represents events providing information related to transitions."><code>TransitionEvent</code></a> interface and the <a href="/en-US/docs/Mozilla_event_reference/transitionend" title="The 'transitionend' event"><code>transitionend</code></a> event.</li>
+ <li>Transitions-related properties:  
+<a href="/en-US/docs/Web/CSS/transition" title="The CSS transition property is a shorthand property for transition-property, transition-duration, transition-timing-function, and transition-delay. It allows to define the transition between two states of an element. Different states may be defined using pseudo-classes like :hover or :active or dynamically set using JavaScript."><code>transition</code></a>,  
+<a href="/en-US/docs/Web/CSS/transition-delay" title="The transition-delay CSS property specifies the amount of time to wait between a change being requested to a property that is to be transitioned and the start of the transition effect."><code>transition-delay</code></a>,  
+<a href="/en-US/docs/Web/CSS/transition-duration" title="The transition-duration CSS property specifies the number of seconds or milliseconds a transition animation should take to complete. By default, the value is 0s, meaning that no animation will occur."><code>transition-duration</code></a>,  
+<a href="/en-US/docs/Web/CSS/transition-property" title="The transition-property CSS property is used to specify the names of CSS properties to which a transition effect should be applied."><code>transition-property</code></a>,  
+<a href="/en-US/docs/Web/CSS/transition-timing-function" title="The CSS transition-timing-function property is used to describe how the intermediate values of the CSS&nbsp;properties being affected by a transition effect are calculated. This in essence lets you establish an acceleration curve, so that the speed of the transition can vary over its duration."><code>transition-timing-function</code></a></li>
+</ul>
+	</article>
+
+
+	<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+	<script src="js/main.js"></script>
 </body>
 </html>
